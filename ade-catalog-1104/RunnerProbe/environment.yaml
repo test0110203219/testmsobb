@@ -1,0 +1,6 @@
+name: RunnerProbe
+version: 1.0.0
+summary: Synthetic custom runner integrity control
+description: Researcher-owned empty deployment and execution marker only
+runner: msobb-ade-registry-1104a.azurewebsites.net/repo@sha256:42fd971df423261539d4d62bb03717c21ddd949b967f3739daa9b08409ed9100
+templatePath: azuredeploy.json
