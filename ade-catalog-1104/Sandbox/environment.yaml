@@ -1,5 +1,0 @@
-name: Sandbox
-summary: Synthetic ADE source-binding control
-description: Deploys an empty ARM template for an authorized test environment
-runner: ARM
-templatePath: azuredeploy.json
