@@ -1,0 +1,6 @@
+name: Sandbox
+version: 1.0.0
+summary: MSOBB synthetic catalog sync control
+description: Empty deployment template used to verify cached template bytes
+runner: ARM
+templatePath: azuredeploy.json
