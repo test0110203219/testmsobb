@@ -1,5 +1,5 @@
 name: Sandbox
 summary: Synthetic ADE runner digest control
 description: Deploys an empty ARM template for an authorized test environment
-runner: "msobbaderunner1118.azurecr.io/ade/runner:safe@sha256:0000000000000000000000000000000000000000000000000000000000000000"
+runner: ARM
 templatePath: azuredeploy.json
