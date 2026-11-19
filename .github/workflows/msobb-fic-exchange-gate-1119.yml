@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - 'msobb-fic-*'
+      - 'MSOBB-FIC-*'
 permissions:
   contents: read
   id-token: write
