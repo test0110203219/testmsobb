@@ -1,0 +1,58 @@
+name: MSOBB FIC exchange gate 1119
+on:
+  push:
+    branches:
+      - 'msobb-fic-*'
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  token_exchange:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exchange issued OIDC without exposing tokens
+        shell: bash
+        run: |
+          python - <<'PY'
+          import base64, json, os, urllib.parse, urllib.request, urllib.error
+          base = os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"]
+          sep = "&" if "?" in base else "?"
+          url = base + sep + "audience=" + urllib.parse.quote("api://AzureADTokenExchange", safe="")
+          request = urllib.request.Request(url, headers={"Authorization": "Bearer " + os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]})
+          with urllib.request.urlopen(request, timeout=15) as response:
+              assertion = json.load(response)["value"]
+          body = assertion.split(".")[1]
+          body += "=" * (-len(body) % 4)
+          issued = json.loads(base64.urlsafe_b64decode(body))
+          form = urllib.parse.urlencode({
+              "client_id": "798bd405-541f-4d0d-8621-5b193ab48543",
+              "scope": "https://management.azure.com/.default",
+              "grant_type": "client_credentials",
+              "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+              "client_assertion": assertion,
+          }).encode()
+          token_url = "https://login.microsoftonline.com/bd494005-de34-4704-b9dc-e4c6bc915eec/oauth2/v2.0/token"
+          try:
+              with urllib.request.urlopen(urllib.request.Request(token_url, data=form, headers={"Content-Type": "application/x-www-form-urlencoded"}), timeout=20) as response:
+                  status = response.status
+                  result = json.load(response)
+          except urllib.error.HTTPError as ex:
+              status = ex.code
+              result = json.load(ex)
+          access = result.get("access_token")
+          access_claims = {}
+          if access:
+              part = access.split(".")[1]
+              part += "=" * (-len(part) % 4)
+              access_claims = json.loads(base64.urlsafe_b64decode(part))
+          print(json.dumps({
+              "branch": os.environ.get("GITHUB_REF_NAME"),
+              "oidc_subject": issued.get("sub"),
+              "oidc_repository_id": issued.get("repository_id"),
+              "http_status": status,
+              "access_token_present": bool(access),
+              "oid_matches_owned_uami": access_claims.get("oid") == "15df78d3-6e79-4237-b74b-feeec353df75",
+              "error": result.get("error"),
+              "error_codes": result.get("error_codes"),
+          }, sort_keys=True))
+          PY
