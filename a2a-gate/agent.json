@@ -1,0 +1,7 @@
+{
+  "name": "MSOBB Synthetic A2A Gate",
+  "description": "Owned research test card with inert content only",
+  "url": "https://example.invalid/msobb-agent",
+  "version": "1.0.0",
+  "capabilities": {}
+}
