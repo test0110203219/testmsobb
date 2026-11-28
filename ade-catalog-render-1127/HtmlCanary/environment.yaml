@@ -1,0 +1,6 @@
+name: MSOBBRenderCanary
+version: 1.0.0
+summary: 'MSOBB summary <img src=x onerror="document.documentElement.dataset.msobbrenderSummary=1">'
+description: 'MSOBB description <svg onload="document.documentElement.dataset.msobbrenderDescription=1"></svg>'
+runner: ARM
+templatePath: azuredeploy.json
